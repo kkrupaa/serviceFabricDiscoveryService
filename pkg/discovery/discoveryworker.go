@@ -393,7 +393,9 @@ func TestRawRun() {
 
 	kvs := []*KVPair{
 		{Key: "traefik.http.routers.ddd.rule", Value: "Prefix('/dario')"},
-		{Key: "traefik.http.middlewares.sf-stripprefixregex_nonpartitioned.stripPrefixRegex.Regex.0", Value: "^/[^/]*/[^/]*/*"},
+		//{Key: "traefik.http.middlewares.sf-stripprefixregex_nonpartitioned.stripPrefixRegex.Regex.0", Value: "^/[^/]*/[^/]*/*"},
+		{Key: "traefik.http.middlewares.sf-stripprefix_backend.stripprefix.prefixes.0", Value: "/backend"},
+		
 	}
 
 	err := Decode(kvs, &conf, "traefik")
@@ -412,7 +414,8 @@ func (p *Provider) generateConfiguration(e []ServiceItemExtended) *dynamic.Confi
 		//{Key: "traefik.http.middlewares.111.stripPrefix.prefixes", Value: "/dario , /dario1"},
 		//{Key: "traefik.http.middlewares.111.stripPrefix.Prefixes.1", Value: "/dario"},
 		//{Key: "traefik.http.routers.ddd.rule", Value: "PathPrefix(`/dario9`)"},
-		{Key: "traefik.http.middlewares.sf-stripprefixregex_nonpartitioned.stripPrefixRegex.Regex", Value: "^/[^/]*/[^/]*/*"},
+		//{Key: "traefik.http.middlewares.sf-stripprefixregex_nonpartitioned.stripPrefixRegex.Regex", Value: "^/[^/]*/[^/]*/*"},
+		{Key: "traefik.http.middlewares.sf-stripprefix_backend.stripprefix.prefixes", Value: "/backend"},
 	}
 
 	for _, i := range e {
@@ -588,7 +591,8 @@ func (p *Provider) generateHTTPRuleEntries(epName string, ep []*KVPair, name str
 		rules[fmt.Sprintf("traefik.http.routers.%s.service", name)] = name
 		rules[fmt.Sprintf("traefik.http.routers.%s.rule", name)] = rule
 
-		rules[fmt.Sprintf("traefik.http.routers.%s.middlewares", name)] = "sf-stripprefixregex_nonpartitioned"
+		//rules[fmt.Sprintf("traefik.http.routers.%s.middlewares", name)] = "sf-stripprefixregex_nonpartitioned"
+		rules[fmt.Sprintf("traefik.http.routers.%s.middlewares", name)] = "sf-stripprefix_backend"
 
 		// add the user provided ones
 		for _, entry := range ep {
